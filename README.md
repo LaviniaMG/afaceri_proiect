@@ -71,7 +71,7 @@ proiect/
 ### 🔹 4.0. Clonare repo
 ```
 git clone https://github.com/LaviniaMG/afaceri_proiect.git
-cd proiect
+cd afaceri_proiect
 ```
 
 
@@ -182,6 +182,7 @@ npm start
 ```
 http://localhost:3000
 ```
+
 
 
 
