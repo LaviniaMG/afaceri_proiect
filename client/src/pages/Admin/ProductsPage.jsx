@@ -14,6 +14,7 @@ export default function AdminProducts() {
     image: null,
   });
   const [editingProduct, setEditingProduct] = useState(null);
+  const [popupProduct, setPopupProduct] = useState(null); // product to delete
 
   const fetchProducts = async () => {
     try {
@@ -29,6 +30,15 @@ export default function AdminProducts() {
   useEffect(() => {
     if (token) fetchProducts();
   }, [token]);
+
+  // CLOSE POPUP ON ESC
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === "Escape") setPopupProduct(null);
+    };
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -72,14 +82,17 @@ export default function AdminProducts() {
     }
   };
 
-  const handleDelete = async (productId) => {
+  const handleDelete = async () => {
+    if (!popupProduct) return;
     try {
-      await axios.delete(`http://localhost:4000/products/${productId}`, {
+      await axios.delete(`http://localhost:4000/products/${popupProduct.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      fetchProducts();
+      setProducts((prev) => prev.filter((p) => p.id !== popupProduct.id));
     } catch (err) {
       console.error("Error deleting product:", err.response?.data || err);
+    } finally {
+      setPopupProduct(null);
     }
   };
 
@@ -155,31 +168,29 @@ export default function AdminProducts() {
         </button>
       </form>
 
-      {/* Products list - scrollable container */}
+      {/* Products list */}
       <div className="flex-1 overflow-y-auto max-h-[70vh]">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {products.length === 0 && <p className="text-gray-500 col-span-full">No products found.</p>}
           {products.map((p) => (
             <div key={p.id} className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg flex flex-col">
-              <div className="flex-1">
-                <h2 className="text-xl font-semibold">{p.name}</h2>
-                <p className="text-gray-500">{p.description}</p>
-                <p className="text-indigo-600 font-bold mt-1">${p.price}</p>
-                <p className="text-gray-500 mt-1">Stock: {p.stock}</p>
-                <p className="text-gray-500 mt-1">For: {p.targetAnimal}</p>
-
-
+              <div className="relative w-full h-48 bg-gray-200 rounded-lg overflow-hidden mb-3 flex items-center justify-center">
                 {p.image ? (
                   <img
                     src={`http://localhost:4000/uploads/${p.image}`}
                     alt={p.name}
-                    className="h-full w-full object-cover"
+                    className="w-full h-full object-cover"
                   />
                 ) : (
                   <span className="text-6xl">🐾</span>
                 )}
-
               </div>
+              <h2 className="text-xl font-semibold">{p.name}</h2>
+              <p className="text-gray-500">{p.description}</p>
+              <p className="text-indigo-600 font-bold mt-1">${p.price}</p>
+              <p className="text-gray-500 mt-1">Stock: {p.stock}</p>
+              <p className="text-gray-500 mt-1">For: {p.targetAnimal}</p>
+
               <div className="mt-4 flex gap-2">
                 <button
                   onClick={() => {
@@ -198,7 +209,7 @@ export default function AdminProducts() {
                   Edit
                 </button>
                 <button
-                  onClick={() => handleDelete(p.id)}
+                  onClick={() => setPopupProduct(p)}
                   className="flex-1 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                 >
                   Delete
@@ -208,6 +219,35 @@ export default function AdminProducts() {
           ))}
         </div>
       </div>
+
+      {/* DELETE CONFIRM POPUP */}
+      {popupProduct && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          onClick={(e) => e.target === e.currentTarget && setPopupProduct(null)}
+        >
+          <div className="bg-white rounded-xl shadow-lg p-6 w-80 text-center">
+            <h2 className="text-xl font-semibold mb-3">Confirm Delete</h2>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete <b>{popupProduct.name}</b>?
+            </p>
+            <div className="flex gap-3 justify-center">
+              <button
+                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition-colors duration-200"
+                onClick={() => setPopupProduct(null)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors duration-200"
+                onClick={handleDelete}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -23,7 +23,7 @@ async function seedUsers() {
     });
   }
 
-  console.log("✅ Users ready");
+  console.log(" Users ready");
 }
 
 async function seedPets() {
@@ -80,7 +80,7 @@ async function seedPets() {
       });
     }
 
-    console.log("🐾 Pets inserted (Cats, Dogs, Hamsters, Birds)");
+    console.log(" Pets inserted (Cats, Dogs, Hamsters, Birds)");
   } catch (err) {
     console.error("Eroare la seed Pets:", err.message);
   }
@@ -89,7 +89,6 @@ async function seedPets() {
 
 async function seedProducts() {
   try {
-    // Ștergem produsele existente ca să fie fresh
     await Product.destroy({ truncate: true, restartIdentity: true });
 
     // Array manual cu 20 de produse pentru animale
@@ -121,7 +120,7 @@ async function seedProducts() {
       await Product.create(p);
     }
 
-    console.log("🛍️ 20 Products for Pets inserted successfully");
+    console.log(" 20 Products for Pets inserted successfully");
 
   } catch (err) {
     console.error("Eroare la seed produse:", err.message);
@@ -135,7 +134,7 @@ async function runSeed() {
     await seedUsers();
     await seedPets();
     await seedProducts();
-    console.log("🌱 Seed complet din API-uri reale");
+    console.log(" Seed complet din API-uri reale");
   } catch (err) {
     console.error("Eroare la seed:", err.message);
   }
