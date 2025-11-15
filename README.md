@@ -52,9 +52,14 @@ proiect/
 │   └── package.json
 │
 ├── server/          → Backend Node + Express
-│   ├── models/
+│   ├── database/
+|   |      |──models
 │   ├── routes/
-│   ├── controllers/
+│   ├── utils/
+|   ├── uploads/
+|   ├── .env
+|   ├── dataUpd.js
+|   ├── server.js
 │   └── package.json
 │
 └── README.md
@@ -183,6 +188,7 @@ npm start
 ```
 http://localhost:3000
 ```
+
 
 
 
