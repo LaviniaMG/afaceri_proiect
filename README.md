@@ -159,12 +159,6 @@ Pentru a respecta cerintele proiectului, au fost aplicate urmatoarele reguli:
 * Nume componente React: **PascalCase**
 * Modelele Sequelize: **PascalCase**
 
-### ✔ Cod indentat si usor de citit
-
-* Indentare corecta atat in frontend, cat si backend
-* Fara cod duplicat sau blocuri mari necomentate
-* Functiile sunt scurte si usor de inteles
-
 ---
 
 ## 7. Cum rulezi intreg proiectul
@@ -188,6 +182,7 @@ npm start
 ```
 http://localhost:3000
 ```
+
 
 
 
